@@ -15,3 +15,33 @@ function createEmptyBoard() {
   }
   return board;
 }
+
+function createGridUI() {
+  grid.innerHTML = '';
+
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const input = document.createElement('input');
+
+      input.type = 'text';
+      input.maxLength = 1;
+      input.className = 'cell';
+      input.id = `cell-${r}-${c}`;
+
+      if (r % 3 === 0) input.classList.add('top');
+      if (c % 3 === 0) input.classList.add('left');
+      if (r === SIZE - 1) input.classList.add('bottom');
+      if (c === SIZE - 1) input.classList.add('right');
+
+      input.addEventListener('input', function () {
+        if (!/^[1-9]$/.test(input.value)) {
+          input.value = '';
+        }
+      });
+
+      grid.appendChild(input);
+    }
+  }
+}
+
+createGridUI();
