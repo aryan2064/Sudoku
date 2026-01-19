@@ -44,4 +44,60 @@ function createGridUI() {
   }
 }
 
+function isSafe(board, row, col, num) {
+  for (let i = 0; i < SIZE; i++) {
+    if (board[row][i] === num) return false;
+    if (board[i][col] === num) return false;
+  }
+
+  const boxRow = Math.floor(row / 3) * 3;
+  const boxCol = Math.floor(col / 3) * 3;
+
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 3; c++) {
+      if (board[boxRow + r][boxCol + c] === num) return false;
+    }
+  }
+
+  return true;
+}
+
+function findEmptyCell(board) {
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      if (board[r][c] === EMPTY) {
+        return { row: r, col: c };
+      }
+    }
+  }
+  return null;
+}
+
+function solve(board, randomOrder) {
+  const emptyCell = findEmptyCell(board);
+  if (emptyCell === null) return true;
+
+  const row = emptyCell.row;
+  const col = emptyCell.col;
+
+  const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  if (randomOrder) shuffle(numbers);
+
+  for (let i = 0; i < numbers.length; i++) {
+    const num = numbers[i];
+
+    if (isSafe(board, row, col, num)) {
+      board[row][col] = num;
+
+      if (solve(board, randomOrder)) {
+        return true;
+      }
+
+      board[row][col] = EMPTY;
+    }
+  }
+
+  return false;
+}
+
 createGridUI();
