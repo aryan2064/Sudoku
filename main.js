@@ -44,6 +44,39 @@ function createGridUI() {
   }
 }
 
+function renderBoard(board, lockGivenCells) {
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const cell = document.getElementById(`cell-${r}-${c}`);
+      const value = board[r][c];
+
+      cell.value = value === EMPTY ? '' : String(value);
+
+      if (lockGivenCells && puzzle[r][c] !== EMPTY) {
+        cell.readOnly = true;
+        cell.classList.add('fixed');
+      } else {
+        cell.readOnly = false;
+        cell.classList.remove('fixed');
+      }
+    }
+  }
+}
+
+function readBoardFromUI() {
+  const board = createEmptyBoard();
+
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      const cell = document.getElementById(`cell-${r}-${c}`);
+      const text = cell.value.trim();
+      board[r][c] = text === '' ? EMPTY : Number(text);
+    }
+  }
+
+  return board;
+}
+
 function isSafe(board, row, col, num) {
   for (let i = 0; i < SIZE; i++) {
     if (board[row][i] === num) return false;
@@ -149,3 +182,25 @@ function createPuzzleFrom(fullBoard, clues) {
 }
 
 createGridUI();
+
+function generateSudoku() {
+  const fullBoard = generateFullBoard();
+  puzzle = createPuzzleFrom(fullBoard, CLUES);
+  renderBoard(puzzle, true);
+}
+
+function solveSudoku() {
+  const board = readBoardFromUI();
+
+  if (solve(board, false)) {
+    renderBoard(board, true);
+  } else {
+    alert('No valid solution found.');
+  }
+}
+
+createGridUI();
+generateSudoku();
+
+generateBtn.addEventListener('click', generateSudoku);
+solveBtn.addEventListener('click', solveSudoku);
