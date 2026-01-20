@@ -100,4 +100,52 @@ function solve(board, randomOrder) {
   return false;
 }
 
+function copyBoard(board) {
+  const copy = [];
+  for (let r = 0; r < SIZE; r++) {
+    const newRow = [];
+    for (let c = 0; c < SIZE; c++) {
+      newRow.push(board[r][c]);
+    }
+    copy.push(newRow);
+  }
+  return copy;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+}
+
+function generateFullBoard() {
+  const fullBoard = createEmptyBoard();
+  solve(fullBoard, true);
+  return fullBoard;
+}
+
+function createPuzzleFrom(fullBoard, clues) {
+  const newPuzzle = copyBoard(fullBoard);
+
+  const positions = [];
+  for (let r = 0; r < SIZE; r++) {
+    for (let c = 0; c < SIZE; c++) {
+      positions.push({ row: r, col: c });
+    }
+  }
+
+  shuffle(positions);
+
+  const removeCount = SIZE * SIZE - clues;
+  for (let i = 0; i < removeCount; i++) {
+    const pos = positions[i];
+    newPuzzle[pos.row][pos.col] = EMPTY;
+  }
+
+  return newPuzzle;
+}
+
 createGridUI();
